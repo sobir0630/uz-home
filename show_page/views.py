@@ -1,16 +1,18 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.http import HttpResponse
 from .models import ShowPage
+from .services import get_posts, get_image
 
 
-
-# Create your views here.
-def show_page(request):
-    """View function for displaying the show page."""
-    if request.method == "GET":
-        posts = ShowPage.objects.all().order_by('-created_at') # yangi elonlar birinchi
-        return render(request, "show/show_ann.html", {"posts": posts})
-    else:
-        messages.error(request, "Noma'lum so'rov turi")
-
-    return render(request, "show/show_ann.html")
+# Show all pages
+def Posts(request):
+    posts = get_posts()
+    images = get_image()
+    print("images:", images)
+    
+    ctx = {
+        'posts': posts,
+        'images': images,
+    }
+    return render(request, 'show/show_ann.html', ctx)

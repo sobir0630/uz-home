@@ -1,10 +1,10 @@
 from django.urls import path 
-from .views import show_page
+from .views import Posts
 from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('show_page/', show_page, name='show_page'),
+    path('show_page/', Posts, name='show_page'),
 ]
 
 

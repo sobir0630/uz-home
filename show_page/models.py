@@ -1,7 +1,13 @@
 from django.db import models
-from users.models import User
+from django.contrib.auth.models import User
+
 
 # Create your models here.
+class PublishManager(models.Manager):
+    def get_queryset(self):
+        return super(PublishManager, self).get_queryset().all()
+
+
 class ShowPage(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)

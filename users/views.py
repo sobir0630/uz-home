@@ -1,34 +1,31 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse
-from django.contrib.auth import authenticate
-from django.contrib.auth import login as auth_login
+from django.shortcuts import render, redirect
+from django.contrib.auth import logout, authenticate, login as auth_login
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from . import services
 from .form import UserSave
 from .models import User
+from add_page.models import Annoncements
 
 
+# -----------------------
+#----- REGISTER ---------
+# -----------------------
 
-def log(request):
-    user = get_object_or_404(User, id=1)
-    html = f"<h1>Salom, bu users ilovasi {user.first_name}</h1>"
-    return HttpResponse(html)
-
-
-# Create your views here.
-def home_page(request):
-    if not request.user.is_authenticated:
-        return redirect("login")
-    return render(request, 'main.html')
+# Decorator
+def login_required_decorator(view_func):
+    return login_required(view_func, login_url='login')
 
 
+# Login
 def get_login(request):
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
     
-        user = authenticate(User, username=username, password=password)
+        user = authenticate(request, username=username, password=password)
         if user is not None:
-            auth_login(request, user)  # login qilish
+            auth_login(request, user)
             messages.success(request, "Successfully logged in")
             return redirect("home_page")
         else:
@@ -36,42 +33,50 @@ def get_login(request):
 
     return render(request, 'get_logins/login.html')
 
+
+# Register
 def register(request):
     if request.method == "POST":
         form = UserSave(request.POST)
         if form.is_valid(): 
-            form.save()
+            user = form.save(commit=False)
+            user.set_password(form.cleaned_data['password'])
+            user.save()
             messages.success(request, "Successfully registered!")
             return redirect("home_page")
         else:
             messages.error(request, "Please correct the errors below")
     else:
-        form = UserSave()  # POST bolmasa bo‘sh form
+        form = UserSave()  
 
     return render(request, 'get_logins/register.html', {'form': form})
 
 
+# Logout
+@login_required_decorator
+def get_logout(request):
+    logout(request)
+    return redirect('login')
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# Home page
+@login_required
+def home_page(request):
+    posts = services.get_posts()
+    images = services.get_image()
+    username = request.user.username
+    print(f"DEBUG: Username = {username}")
+    email = request.user.email
+    print(type(images))
+    catigories = Annoncements.HOME_CATEGORY_CHOICES
+    
+    ctx = {
+        'posts': posts,
+        'catigories': catigories,
+        'image': images, 
+        'username': username,
+        'email': email,
+           
+    }
+    
+    return render(request, 'main.html', ctx)

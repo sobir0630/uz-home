@@ -1,0 +1,36 @@
+  /* Kunduzgi (light) rejim */
+  body {
+    background-color: #ffffff;
+    color: #000000;
+    font-family: Arial, sans-serif;
+    transition: all 0.3s ease;
+    padding: 20px;
+  }
+
+  /* Dark-mode class */
+  body.dark-mode {
+    background-color: #121212;
+    color: #f0f0f0;
+  }
+
+  /* Toggle button */
+  #darkModeToggle {
+    padding: 10px 20px;
+    background-color: #008CBA;
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+
+#footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+
+    width: 100%;
+    background: rgb(202, 81, 81);
+    color: white;
+    text-align: center;
+    padding: 15px 0;
+}

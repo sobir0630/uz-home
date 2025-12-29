@@ -1,53 +1,86 @@
 <html lang="en">
+{% load static %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Uy qo'shish - UzMarket</title>
+    <title>Uy qo‘shish - UzMarket</title>
+
+    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+    <link rel="stylesheet" href="{% static 'css/dark-mode-style.css' %}">
 </head>
-<body>
-<!-- HEADER -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<body class="bg-light">
+
+<!-- ================= HEADER ================= -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
     <div class="container">
         <b class="navbar-brand fw-bold">UzHome</b>
 
-        <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#menu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+        <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'home_page' %}">Bosh sahifa</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'show_page' %}">E’lonlar</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="{% url 'add_announcement' %}">E’lon qo‘shish</a>
+            </li>
+        </ul>
 
-        <div class="collapse navbar-collapse" id="menu">
-            <ul class="navbar-nav me-auto">
-                <li class="nav-item"><a class="nav-link" href="{% url 'home_page' %}">Bosh sahifa</a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'show_page' %}">E’lonlar</a></li>
-                <li class="nav-item"><a class="nav-link active" href="{% url 'add_announcement' %}">E’lon qo‘shish</a></li>
-            </ul>
+        <div class="d-flex align-items-center gap-2">
+            <button id="darkModeToggle" class="btn btn-outline-light">
+                <i class="bi bi-moon"></i>
+            </button>
 
-            <!-- ACCOUNT -->
-            <div class="d-flex">
-                <a href="{% url 'login' %}" class="btn btn-outline-light" style="margin-right: 3px">Kirish</a>
-                <a href="{% url 'register' %}" class="btn btn-outline-success" style="margin-right: 3px">Ro‘yxatdan o‘tish</a>
-                <a href="{% url 'logout' %}" class="btn btn-outline-danger" style="margin-right: 3px">Chiqish</a>
-            </div>
+            <a href="{% url 'account' %}" class="btn btn-outline-light">Account</a>
+
         </div>
     </div>
 </nav>
-<div class="container mt-5">
+
+<!-- ================= FORM ================= -->
+<div class="container my-5">
     <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
-            <div class="card shadow-lg rounded-4">
-                <div class="card-body p-4">    
-                <form method="POST" class="form-control">
-                    <div >
-                        {{ form }}
+        <!-- KENGROQ QILDIK -->
+        <div class="col-lg-10 col-xl-8">
+
+            <div class="card border-0 shadow-lg rounded-4">
+                <div class="card-header bg-success text-white rounded-top-4">
+                    <h4 class="mb-0 fw-bold">
+                        <i class="bi bi-house-add"></i> E’lon qo‘shish
+                    </h4>
+                </div>
+
+                <div class="card-body p-4 p-lg-5">
+
+                    <!-- FORM (TEGILMADIK) -->
+                    <form method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-success btn-lg">E’lon qo’shish</button>
+
+                        {{ form }}
+
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="bi bi-check-circle"></i> E’lon qo‘shish
+                            </button>
                         </div>
-                    </div>
-                </form>
+                    </form>
+                    <!-- /FORM -->
+
+                </div>
             </div>
+
         </div>
     </div>
-<div>
+</div>
+
+<!-- JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{% static 'js/dark-mode.js' %}"></script>
+
 </body>
-<html>
+</html>

@@ -33,6 +33,7 @@ class Annoncements(models.Model):
     description = models.TextField()
     image = models.ImageField(upload_to='posts/post/', null=True, blank=True)
     seller_contact = models.CharField(max_length=100, null=True, blank=True)
+    telegram = models.CharField(max_length=100, null=True , blank=True)
     publish = models.DateTimeField(default=timezone.now)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -48,13 +49,22 @@ class Annoncements(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
+            combined = f"{self.name} {self.location} {self.publish}"
+            slug_base = slugify(combined)
             
-            self.slug = slugify(self.name)
+                    # UNIQUE bo‘lishini tekshiramiz
+            slug = slug_base
+            num = 1
+            while Annoncements.objects.filter(slug=slug).exists():
+                slug = f"{slug_base}-{num}"
+                num += 1
+
+            self.slug = slug
                 
         super().save(*args, **kwargs)
     
-    
-    object = models.Manager()  # The default manager
+    # default managerni qo'lda yozib qo'yish
+    objects = models.Manager() 
     published = PublishedManager()  # Custom manager for published announcements
 
         

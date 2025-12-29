@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mening Account | UzHome</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+</head>
+<body class="bg-light">
+
+ <!-- ================= HEADER ================= -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <b class="navbar-brand fw-bold">UzHome</b>
+
+        <div class="collapse navbar-collapse" id="menu">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'home_page' %}">Bosh sahifa</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'show_page' %}">E’lonlar</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'add_announcement' %}">E’lon qo‘shish</a>
+                </li>
+            </ul>
+
+            <!-- Dark mode -->
+            <button id="darkModeToggle" class="btn btn-dark me-3">
+                <i class="bi bi-moon"></i>
+            </button>
+            <!-- JS -->
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+            <script src="{% static 'js/dark-mode.js' %}"></script>
+
+            <!-- Account -->
+            <div class="d-flex">
+                <a href="{% url 'login' %}" class="btn btn-outline-light me-2">Kirish</a>
+                <a href="{% url 'register' %}" class="btn btn-outline-success me-2">Ro‘yxatdan o‘tish</a>
+                <a href="{% url 'logout' %}" class="btn btn-outline-danger">Chiqish</a>
+            </div>
+        </div>
+    </div>
+</nav> 
+
+<div class="container py-5">
+    <div class="row">
+        <!-- ================= LEFT PANEL (PROFILE) ================= -->
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow-sm rounded-4">
+                {% if user %}
+                <div class="card-body text-center">
+                    <img src="data:image/svg+xml;utf8,
+                    <svg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 24 24' fill='none' stroke='%2371A398' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'>
+                    <circle cx='12' cy='8' r='4'></circle>
+                    <path d='M6 20c0-3.3 2.7-6 6-6s6 2.7 6 6'></path>
+                    </svg>" 
+                    class="rounded-circle" width="120" height="120" alt="User Avatar">
+
+                    <h5 class="fw-bold">{{ user.username }}</h5>
+                    <p class="text-muted mb-1">📧 {{ user.email }}</p>
+                    <p class="text-muted mb-1">📞 {{ user.phone }}</p>
+                    <p class="text-muted">💬 @{{ user.telegram }}</p>
+                    <a href="#" class="btn btn-success w-100 mt-3">Profilni tahrirlash</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- ================= RIGHT PANEL (MY POSTS) ================= -->
+        <div class="col-lg-8">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="fw-bold">Mening E’lonlarim</h4>
+                <a href="{% url 'add_announcement' %}" class="btn btn-primary">E’lon qo‘shish</a>
+            </div>
+
+            <div class="row g-4">
+                {% for post in my_posts %}
+                <div class="col-md-6">
+                    <div class="card h-100 shadow-sm rounded-4 overflow-hidden" style="background-color: #71A398;">
+                        <div style="height:180px; overflow:hidden;">
+                            <img src="{{ post.image.url }}" class="w-100 h-100 object-fit-cover" alt="E’lon rasmi">
+                        </div>
+                        <div class="card-body">
+                            <h6 class="fw-bold">{{ post.name }}</h6>
+                            <p class="text-muted mb-1">💰 {{ post.price }} so‘m</p>
+                            <p class="text-muted mb-1">📍 {{ post.location }}</p>
+                            <p class="text-muted mb-1">📂 {{ post.get_category_display }}</p>
+                        </div>
+                        <div class="card-footer border-0 bg-transparent d-flex justify-content-between">
+                            <a href="{% url 'detail_page' post.slug %}" class="btn btn-success btn-sm">Batafsil</a>
+                            <a href="{% url 'update' post.id %}" class="btn btn-warning btn-sm">Tahrirlash</a>
+                            <a href="{% url 'delete' post.id %}" class="btn btn-danger btn-sm">O‘chirish</a>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-center text-danger">Siz hali e’lon qo‘shmadingiz 😢</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -23,10 +23,13 @@ def get_posts():
         posts = dictfetchall(cursor)
         return posts
 
-# image
-def get_image():
-    get = get_posts()
-    imgs = []
-    for i in get:
-        imgs.append(i['image'])
-    return imgs
+# imagesni olish 
+def get_image():  
+    with closing(connection.cursor()) as cursor:
+        cursor.execute("""SELECT image FROM add_page_annoncements""")
+        images = dictfetchall(cursor)
+        print("rasm:", images)
+        if images:
+            print('rasm bittalik:', images[0]['image'])
+            return images[0]['image']
+        return images

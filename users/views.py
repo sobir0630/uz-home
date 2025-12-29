@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import logout, authenticate, login as auth_login
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.core.paginator import Paginator
 from . import services
 from .form import UserSave
 from .models import User
@@ -11,7 +12,6 @@ from add_page.models import Annoncements
 # -----------------------
 #----- REGISTER ---------
 # -----------------------
-
 # Decorator
 def login_required_decorator(view_func):
     return login_required(view_func, login_url='login')
@@ -23,7 +23,7 @@ def get_login(request):
         username = request.POST.get("username")
         password = request.POST.get("password")
     
-        user = authenticate(request, username=username, password=password)
+        user = authenticate(User, username=username, password=password)
         if user is not None:
             auth_login(request, user)
             messages.success(request, "Successfully logged in")
@@ -62,21 +62,25 @@ def get_logout(request):
 # Home page
 @login_required
 def home_page(request):
-    posts = services.get_posts()
-    images = services.get_image()
+    posts = Annoncements.objects.all().order_by('-created_at')
     username = request.user.username
     print(f"DEBUG: Username = {username}")
     email = request.user.email
-    print(type(images))
     catigories = Annoncements.HOME_CATEGORY_CHOICES
     
+    # Paginator
+    paginator = Paginator(posts, 6)
+    
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
     ctx = {
-        'posts': posts,
+        'page_obj': page_obj,
         'catigories': catigories,
-        'image': images, 
         'username': username,
         'email': email,
            
     }
     
     return render(request, 'main.html', ctx)
+

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="uz">
+    {% load static %}
+<head>
+    <meta charset="UTF-8">
+    <title>Post Detail</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+</head>
+<body class="bg-light">
+ <!-- ================= HEADER ================= -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <b class="navbar-brand fw-bold">UzHome</b>
+
+        <div class="collapse navbar-collapse" id="menu">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'home_page' %}">Bosh sahifa</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="{% url 'show_page' %}">E’lonlar</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'add_announcement' %}">E’lon qo‘shish</a>
+                </li>
+            </ul>
+
+            <!-- Dark mode -->
+            <button id="darkModeToggle" class="btn btn-dark me-3">
+                <i class="bi bi-moon"></i>
+            </button>
+
+            <!-- Account -->
+            <div class="d-flex">
+                <a href="{% url 'account' %}" class="btn btn-outline-light">Account</a>
+
+            </div>
+        </div>
+    </div>
+</nav> 
+<div class="container my-5">
+
+    <div class="row g-4">
+        <!-- LEFT: IMAGE -->
+        <div class="col-lg-7">
+            {% if post %}
+            <div class="card shadow-sm">
+                <img src="{{ post.image.url }}" class="card-img-top" alt="Post image">
+            </div>
+        </div>
+
+        <!-- RIGHT: INFO -->
+        <div class="col-lg-5" style="background-color: #71A398;">
+            <div class="card shadow-sm p-4" style="background-color: #81a19aff;">
+                <h3 class="fw-bold mb-2">{{ post.name }}</h3>
+
+                <h4 class="text-success fw-bold mb-3">
+                    {{ post.price }} $
+                </h4>
+
+                <p class="text-muted">
+                    {{ post.description }}
+                </p>
+
+                <hr>
+
+                <ul class="list-unstyled">
+                    <li class="mb-2">
+                        📍 <strong>Joy:</strong> {{ post.location }}
+                    </li>
+                    <li class="mb-2">
+                        🗂 <strong>Kategoriya:</strong> {{ post.get_category_display }}
+                    </li>
+                    <li class="mb-2">
+                        ⏰ <strong>Joylangan:</strong> {{ post.created_at|date:"d M Y" }}
+                    </li>
+                </ul>
+
+                <hr>
+
+                <!-- CONTACT -->
+                <div class="d-grid gap-2">
+                    <a href="tel:{{ post.seller_contact }}" class="btn btn-success">
+                        📞 Qo‘ng‘iroq qilish
+                    </a>
+                    <a href="https://t.me/{{ post.telegram }}" class="btn btn-outline-primary">
+                        💬 Telegram
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- SELLER INFO -->
+    <div class="card shadow-sm mt-4" style="background-color: #71A398;">
+        <div class="card-body">
+            <h5 class="fw-bold mb-3">Sotuvchi haqida</h5>
+            <p class="mb-1"><strong>Ismi:</strong> {{ post.user.username }}</p>
+            <p><strong>Email:</strong> {{ post.user.email }} </p>
+            <p><strong>Telegram:</strong> {{ post.telegram }} </p>
+            <p class="mb-0"><strong>Ro‘yxatdan o‘tgan:</strong> {{ post.user.date_joined|date:"d M Y H:i" }}</p>
+        </div>
+    </div>
+</div>
+<hr style="color: red; bordir: 3px solid;">
+<!--bunga uxshash postlar-->
+<div class="container">
+    <h4 class="mt-5 text-success">❤️ Shunga o‘xshash e’lonlar:</h4>
+    <div class="row g-4">
+            {% for post in related_posts %}
+            <div class="col-lg-4 col-md-6">
+                <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden" style="background-color: #71A398;">
+                    <!-- IMAGE -->
+                    <div style="height:220px; overflow:hidden;">
+                        <img src="{{ post.image.url }}" class="w-100 h-100 object-fit-cover" alt="E’lon rasmi">
+                    </div>
+
+                    <!-- BODY -->
+                    <div class="card-body">
+                        <h5 class="fw-bold">{{ post.title }}</h5>
+                        <p class="text-black mb-1">
+                            📂 <b>{{ post.get_category_display }}</b><br>
+                            📍 {{ post.location }}
+                        </p>
+                        <p class="text-muted">{{ post.description|truncatewords:10 }}</p>
+                        <h5 class="text-success fw-bold">💰 {{ post.price }} so‘m</h5>
+                        <h6 class="text-success fw-bold">🏡 {{ post.get_category_display }}</h6>
+                    </div>
+
+                    <!-- FOOTER -->
+                    <div class="card-footer border-0" style="background-color: #71A398;">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                👤 <b>{{ post.user }}</b><br>
+                                📞 {{ post.seller_contact }}
+                            </div>
+                            <small class="text-muted">🕒 {{ post.created_at|date:"d M Y H:i" }}</small>
+                        </div>
+                    </div>
+
+                    <div class="p-3">
+                        <a href="{% url 'detail_page' post.slug %}" class="btn btn-success w-100">Detail</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p class="text-center text-danger">Hech qanday e’lon topilmadi ❌</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<!-- JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{% static 'js/dark-mode.js' %}"></script>
+</body>
+</html>

@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.models import User
+from users.models import User
 
 
 class UserSave(forms.ModelForm):
@@ -8,7 +8,7 @@ class UserSave(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'email', 'password']
+        fields = "__all__"
 
     def clean(self):
         cleaned_data = super().clean()
@@ -16,10 +16,5 @@ class UserSave(forms.ModelForm):
             self.add_error('password2', "Passwords do not match")
         return cleaned_data
 
-    def save(self, commit=True):
-        user = super().save(commit=False)
-        user.set_password(self.cleaned_data['password'])  # AUTOMATIK
-        if commit:
-            user.save()
-        return user
+
 

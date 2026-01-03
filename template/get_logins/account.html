@@ -64,7 +64,7 @@
                     <p class="text-muted mb-1">📧 {{ user.email }}</p>
                     <p class="text-muted mb-1">📞 {{ user.phone }}</p>
                     <p class="text-muted">💬 @{{ user.telegram }}</p>
-                    <a href="#" class="btn btn-success w-100 mt-3">Profilni tahrirlash</a>
+                    <a href="{% url 'edit-profile' %}" class="btn btn-success w-100 mt-3">Profilni tahrirlash</a>
                 </div>
                 {% endif %}
             </div>
@@ -95,6 +95,26 @@
                             <a href="{% url 'update' post.id %}" class="btn btn-warning btn-sm">Tahrirlash</a>
                             <a href="{% url 'delete' post.id %}" class="btn btn-danger btn-sm">O‘chirish</a>
                         </div>
+                        <div>
+                            {% if post.status == 'published' %}
+                                <span class="badge bg-success">Ochiq</span>
+                            {% else %}
+                                <span class="badge bg-danger">Yopiq</span>
+                            {% endif %}
+                        </div>
+                        <form method="post" action="{% url 'post_toggle' post.id %}" class="mt-2">
+                            {% csrf_token %}
+                            {% if post.status == 'draft' %}
+                                <button type="submit" class="btn btn-success btn-sm">
+                                    🔓 Yoqish
+                                </button>
+                            {% else %}
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    🔒 O‘chirish
+                                </button>
+                            {% endif %}
+                        </form>
+
                     </div>
                 </div>
                 {% empty %}

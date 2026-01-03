@@ -89,6 +89,9 @@
                     <a href="https://t.me/{{ post.telegram }}" class="btn btn-outline-primary">
                         💬 Telegram
                     </a>
+                        <a href="{% url 'send_email' post.id %}" class="btn btn-outline-success">
+                        👥 Postni ulashish
+                    </a>
                 </div>
             </div>
             {% endif %}
@@ -121,7 +124,7 @@
 
                     <!-- BODY -->
                     <div class="card-body">
-                        <h5 class="fw-bold">{{ post.title }}</h5>
+                        <h5 class="fw-bold">{{ post.name }}</h5>
                         <p class="text-black mb-1">
                             📂 <b>{{ post.get_category_display }}</b><br>
                             📍 {{ post.location }}

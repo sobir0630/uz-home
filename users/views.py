@@ -19,13 +19,17 @@ def login_required_decorator(view_func):
 
 # Login
 def get_login(request):
+    user = request.user
+    print('request user:', user.id)
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
-    
-        user = authenticate(User, username=username, password=password)
+
+        # Faqat username va password
+        user = authenticate(request, username=username, password=password)
+
         if user is not None:
-            auth_login(request, user)
+            auth_login(request, user)  # login qiladi
             messages.success(request, "Successfully logged in")
             return redirect("home_page")
         else:
@@ -33,14 +37,12 @@ def get_login(request):
 
     return render(request, 'get_logins/login.html')
 
-
 # Register
 def register(request):
     if request.method == "POST":
         form = UserSave(request.POST)
         if form.is_valid(): 
             user = form.save(commit=False)
-            user.set_password(form.cleaned_data['password'])
             user.save()
             messages.success(request, "Successfully registered!")
             return redirect("home_page")
@@ -60,12 +62,11 @@ def get_logout(request):
 
 
 # Home page
-@login_required
+# @login_required
 def home_page(request):
-    posts = Annoncements.objects.all().order_by('-created_at')
+    posts = Annoncements.objects.filter(status='published').order_by('-created_at')
     username = request.user.username
     print(f"DEBUG: Username = {username}")
-    email = request.user.email
     catigories = Annoncements.HOME_CATEGORY_CHOICES
     
     # Paginator
@@ -78,7 +79,6 @@ def home_page(request):
         'page_obj': page_obj,
         'catigories': catigories,
         'username': username,
-        'email': email,
            
     }
     

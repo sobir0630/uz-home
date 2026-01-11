@@ -3,12 +3,14 @@ from django.contrib.auth import logout, authenticate, login as auth_login
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.paginator import Paginator
+
 from . import services
 from .form import UserSave
-from .models import User
 from add_page.models import Annoncements
+from django.contrib.auth import get_user_model
 
 
+User = get_user_model()
 # -----------------------
 #----- REGISTER ---------
 # -----------------------
@@ -19,8 +21,7 @@ def login_required_decorator(view_func):
 
 # Login
 def get_login(request):
-    user = request.user
-    print('request user:', user.id)
+    permission_classes = [IsAuthenticated]
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
@@ -33,9 +34,12 @@ def get_login(request):
             messages.success(request, "Successfully logged in")
             return redirect("home_page")
         else:
-            messages.error(request, "Invalid username or password")
+            messages.error(request, "Invalid username or password | ")
+
 
     return render(request, 'get_logins/login.html')
+
+
 
 # Register
 def register(request):
@@ -43,9 +47,11 @@ def register(request):
         form = UserSave(request.POST)
         if form.is_valid(): 
             user = form.save(commit=False)
+            user.set_password(form.cleaned_data['password'])
+            user.is_active = True
             user.save()
             messages.success(request, "Successfully registered!")
-            return redirect("home_page")
+            return redirect("login")
         else:
             messages.error(request, "Please correct the errors below")
     else:

@@ -1,0 +1,24 @@
+.my-img {
+    width: 200px;       /* normal o‘lcham */
+    cursor: pointer;    /* bosish mumkinligi ko‘rinadi */
+    transition: 0.3s;
+}
+
+#overlay {
+    display: none;             /* dastlab yashirin */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;              /* ekran bo‘ylab */
+    height: 100vh;
+    background-color: rgba(0,0,0,0.9); /* qora fon biroz shaffof */
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+#overlay img {
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 5px;
+}

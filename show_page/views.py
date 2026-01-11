@@ -15,9 +15,10 @@ from add_page.models import Annoncements
 from add_page.form import AnnoncementsForm
 from .services import get_posts, get_image
 from .forms import EmailSendForm
-from users.models import User
+from django.contrib.auth import get_user_model
 
 
+User = get_user_model()
 
 class PostsView(View):
     def get(self, request):
@@ -90,6 +91,7 @@ class PostsDetail(View):
         related_posts_list = list(related_posts)
         print('uxshash:', related_posts)
         print("related posts:", related_posts_list)
+        print("related posts:", post.telegram)
         
         context = {
             'post': post,
@@ -180,6 +182,7 @@ class AccountView(LoginRequiredMixin, View):
     def get(self, request):
         user = request.user
         print("account phone:", user.id)
+        print("users phone:", user.phone)
         my_posts = Annoncements.objects.filter(user=user)
         
 
@@ -193,11 +196,13 @@ class AccountView(LoginRequiredMixin, View):
 class EditProfile(LoginRequiredMixin, View):
 
     def get(self, request):
+        user = request.user
+        print("userim:", user.first_name)
         # Formani ko‘rsatish
         return render(request, 'get_logins/edit_profile.html')
 
     def post(self, request):
-        queryset = User.objects,all()
+        queryset = User.objects.all()
         # Ma’lumotlarni saqlash
         user = request.user
 

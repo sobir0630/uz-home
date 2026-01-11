@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="uz">
-    {% load static %}
+{% load static %}
 <head>
     <meta charset="UTF-8">
     <title>Post Detail</title>
@@ -36,7 +36,6 @@
             <!-- Account -->
             <div class="d-flex">
                 <a href="{% url 'account' %}" class="btn btn-outline-light">Account</a>
-
             </div>
         </div>
     </div>
@@ -48,7 +47,8 @@
         <div class="col-lg-7">
             {% if post %}
             <div class="card shadow-sm">
-                <img src="{{ post.image.url }}" class="card-img-top" alt="Post image">
+                <!-- Asosiy post rasmi -->
+                <img src="{{ post.image.url }}" class="card-img-top my-img" alt="Post image">
             </div>
         </div>
 
@@ -86,12 +86,14 @@
                     <a href="tel:{{ post.seller_contact }}" class="btn btn-success">
                         📞 Qo‘ng‘iroq qilish
                     </a>
-                    <a href="https://t.me/{{ post.telegram }}" class="btn btn-outline-primary">
+                {% if post.telegram|slice:":1" == "@" %}
+                    <a href="https://t.me/{{ post.telegram|slice:"1:" }}" class="btn btn-outline-primary">
                         💬 Telegram
                     </a>
                         <a href="{% url 'send_email' post.id %}" class="btn btn-outline-success">
                         👥 Postni ulashish
                     </a>
+                {% endif %}
                 </div>
             </div>
             {% endif %}
@@ -110,45 +112,38 @@
     </div>
 </div>
 <hr style="color: red; bordir: 3px solid;">
-<!--bunga uxshash postlar-->
+
+<!-- Bunga o‘xshash postlar -->
 <div class="container">
-    <h4 class="mt-5 text-success">❤️ Shunga o‘xshash e’lonlar:</h4>
+    <h4 class="mt-10 text-success">❤️ Shunga o‘xshash e’lonlar:</h4>
     <div class="row g-4">
             {% for post in related_posts %}
             <div class="col-lg-4 col-md-6">
                 <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden" style="background-color: #71A398;">
-                    <!-- IMAGE -->
-                    <div style="height:220px; overflow:hidden;">
-                        <img src="{{ post.image.url }}" class="w-100 h-100 object-fit-cover" alt="E’lon rasmi">
-                    </div>
+                <!-- IMAGE -->
+                <div style="height:220px; overflow:hidden;">
+                    <img src="{{ post.image.url }}" class="w-100 h-100 object-fit-cover my-img" alt="E’lon rasmi">
+                </div>
+                
+                <div class="card-body">
+                    <h5 class="fw-bold">{{ post.title }}</h5>
+                    <p class="text-black mb-1">📂 <b>{{ post.get_category_display }}</b><br>📍 {{ post.location }}</p>
+                    <p class="text-muted">{{ post.description|truncatewords:10 }}</p>
+                    <h5 class="text-success fw-bold">💰 {{ post.price|default:"Noma" }} so‘m</h5>
+                </div>
 
-                    <!-- BODY -->
-                    <div class="card-body">
-                        <h5 class="fw-bold">{{ post.name }}</h5>
-                        <p class="text-black mb-1">
-                            📂 <b>{{ post.get_category_display }}</b><br>
-                            📍 {{ post.location }}
-                        </p>
-                        <p class="text-muted">{{ post.description|truncatewords:10 }}</p>
-                        <h5 class="text-success fw-bold">💰 {{ post.price }} so‘m</h5>
-                        <h6 class="text-success fw-bold">🏡 {{ post.get_category_display }}</h6>
-                    </div>
-
-                    <!-- FOOTER -->
-                    <div class="card-footer border-0" style="background-color: #71A398;">
-                        <div class="d-flex justify-content-between">
-                            <div>
-                                👤 <b>{{ post.user }}</b><br>
-                                📞 {{ post.seller_contact }}
-                            </div>
-                            <small class="text-muted">🕒 {{ post.created_at|date:"d M Y H:i" }}</small>
-                        </div>
-                    </div>
-
-                    <div class="p-3">
-                        <a href="{% url 'detail_page' post.slug %}" class="btn btn-success w-100">Detail</a>
+                <div class="card-footer border-0" style="background-color: #71A398;">
+                    <div class="d-flex justify-content-between">
+                        <div>👤 <b>{{ post.user }}</b><br>📞 {{ post.seller_contact }}</div>
+                        <small class="text-muted">🕒 {{ post.created_at|date:"d M Y H:i" }}</small>
                     </div>
                 </div>
+
+                <div class="p-3">
+                    <a href="{% url 'detail_page' slug=post.slug %}" class="btn btn-success w-100">Detail</a>
+                </div>
+
+            </div>
             </div>
             {% empty %}
             <p class="text-center text-danger">Hech qanday e’lon topilmadi ❌</p>
@@ -156,6 +151,59 @@
         </div>
     </div>
 </div>
+
+<!-- Fullscreen overlay (faqat bitta, barcha rasm uchun) -->
+<div id="overlay" onclick="closeImg()">
+    <img id="overlay-img" src="">
+</div>
+
+<style>
+#overlay {
+    display: none; /* dastlab yashirin */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0,0,0,0.9);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+#overlay img {
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 5px;
+    box-shadow: 0 0 20px black;
+}
+
+.my-img {
+    cursor: pointer;
+    transition: 0.1s;
+}
+.my-img:hover {
+    transform: scale(1.05);
+}
+</style>
+
+<script>
+const overlay = document.getElementById("overlay");
+const overlayImg = document.getElementById("overlay-img");
+
+document.querySelectorAll('.my-img').forEach(img => {
+    img.onclick = function() {
+        overlay.style.display = "flex";
+        overlayImg.src = this.src;
+    }
+});
+
+function closeImg() {
+    overlay.style.display = "none";
+    overlayImg.src = "";
+}
+</script>
+
 <!-- JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="{% static 'js/dark-mode.js' %}"></script>

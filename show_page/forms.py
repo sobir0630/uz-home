@@ -28,9 +28,4 @@ class EmailSendForm(forms.Form):
     )
 
 
-# from django import forms
 
-# class EmailSendForm(forms.Form):
-#     to_email = forms.EmailField(label="Qabul qiluvchi email")
-#     subject = forms.CharField(max_length=255)
-#     message = forms.CharField(widget=forms.Textarea)

@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 import os
 from pathlib import Path
-from datetime import timedelta
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -30,7 +29,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG") == "True"
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -43,11 +42,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
-    'rest_framework',
-    
-    'users',
     'show_page',
     'add_page',
+    'users.apps.UsersConfig',
+    # 'users',
 ]
 
 MIDDLEWARE = [
@@ -123,20 +121,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# AUTH_USER_MODEL = 'users.User'
+AUTH_USER_MODEL = 'users.User'
 
-# rest_framework
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
-}
-
-# JWT
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-}
 
 
 # Static files (CSS, JavaScript, Images)
@@ -148,6 +134,11 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ] 
 
+# backends
+AUTHENTICATION_BACKENDS = [
+    # 'users.backends.UsernameOrEmailBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
 
 # media files
 MEDIA_URL = '/media/'
@@ -160,7 +151,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_URL = '/login/'
 
-
+AUTH_USER_MODEL = "users.User"
 
 # email
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

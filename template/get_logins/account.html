@@ -50,25 +50,52 @@
     <div class="row">
         <!-- ================= LEFT PANEL (PROFILE) ================= -->
         <div class="col-lg-4 mb-4">
-            <div class="card shadow-sm rounded-4">
+            <div class="card shadow-sm rounded-4 border-0" style="background: linear-gradient(145deg, #71A398, #81C784);">
                 {% if user %}
-                <div class="card-body text-center">
+                <div class="card-body text-center py-5">
+                    <!-- User avatar -->
                     <img src="data:image/svg+xml;utf8,
                     <svg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 24 24' fill='none' stroke='%2371A398' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'>
                     <circle cx='12' cy='8' r='4'></circle>
                     <path d='M6 20c0-3.3 2.7-6 6-6s6 2.7 6 6'></path>
-                    </svg>" 
-                    class="rounded-circle" width="120" height="120" alt="User Avatar">
+                    </svg>"
+                    class="rounded-circle border border-white shadow-sm" width="120" height="120" alt="User Avatar">
 
-                    <h5 class="fw-bold">{{ user.username }}</h5>
-                    <p class="text-muted mb-1">📧 {{ user.email }}</p>
-                    <p class="text-muted mb-1">📞 {{ user.phone }}</p>
-                    <p class="text-muted">💬 @{{ user.telegram }}</p>
-                    <a href="{% url 'edit-profile' %}" class="btn btn-success w-100 mt-3">Profilni tahrirlash</a>
+                    <!-- Username -->
+                    <h5 class="fw-bold mt-3 text-white">{{ user.username }}</h5>
+
+                    <!-- Contact info -->
+                    <p class="text-light mb-1">📧 {{ user.email }}</p>
+                    <p class="text-light mb-1">📞 {{ user.phone }}</p>
+                    <p class="text-light">💬 {{ user.telegram }}</p>
+
+                    <!-- Edit profile button -->
+                    <a href="{% url 'edit-profile' %}" class="btn btn-light w-100 mt-3 fw-bold" style="color:#2E7D32;">
+                        Profilni tahrirlash
+                    </a>
                 </div>
                 {% endif %}
             </div>
         </div>
+
+        <style>
+        /* Hover effect for avatar */
+        .card-body img {
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .card-body img:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        /* Card shadow on hover */
+        .card:hover {
+            box-shadow: 0 12px 25px rgba(0,0,0,0.35);
+            transform: translateY(-2px);
+            transition: 0.3s;
+        }
+        </style>
+
 
         <!-- ================= RIGHT PANEL (MY POSTS) ================= -->
         <div class="col-lg-8">

@@ -75,7 +75,7 @@
                 {% endif %}
 
                 <div class="card-body">
-                    <h5 class="fw-bold">{{ post.title }}</h5>
+                    <h5 class="fw-bold">{{ post.name }}</h5>
                     <p class="text-black mb-1">📂 <b>{{ post.get_category_display }}</b><br>📍 {{ post.location }}</p>
                     <p class="text-muted">{{ post.description|truncatewords:10 }}</p>
                     <h5 class="text-success fw-bold">💰 {{ post.price|default:"Noma" }} so‘m</h5>

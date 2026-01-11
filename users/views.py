@@ -21,7 +21,6 @@ def login_required_decorator(view_func):
 
 # Login
 def get_login(request):
-    permission_classes = [IsAuthenticated]
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
